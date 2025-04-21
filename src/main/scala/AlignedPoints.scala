@@ -43,7 +43,7 @@ object AlignedPoints {
   def main(args: Array[String]): Unit = {
     val twoPoints: Seq[Seq[Point]] = points.combinations(2).toSeq
     val segments: Seq[(Int, Int, Int)] = twoPoints.map {
-      case Seq(p1, p2) => ((p1._1 - p2._2), (p2._1 - p1._1), (p1._1 * p2._2 - p1._2 * p2._1))
+      case Seq(p1, p2) => ((p1._2 - p2._2), (p2._1 - p1._1), (p1._1 * p2._2 - p1._2 * p2._1))
     }
 
     val lines = segments.foldLeft(Seq[Seq[(Int, Int, Int)]]().empty){
@@ -57,7 +57,12 @@ object AlignedPoints {
     }
 
     val maxLine = lines.maxBy(_.length)
-    println(s"${maxLine.length} points found on line: $maxLine")
+    val (a, b,c) = maxLine.head
+    val maxLinePoints = points.filter { p =>
+        a * p._1 + c == -b * p._2 // a * x + c == -b * y
+      }
+
+    println(s"${maxLinePoints.length} points found on line with segments $maxLine:\n $maxLinePoints")
   }
 
 }
